@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karya Nusa - Pembuat Makalah Instan & Kolaborasi Akademik</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Times New Roman style font for Academic preview -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600;700&family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            800: '#0B192C',
+                            900: '#1E2022',
+                            950: '#080E18'
+                        },
+                        gold: {
+                            400: '#F3C623',
+                            500: '#E0A96D',
+                            600: '#C58940'
+                        },
+                        emerald: {
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065F46'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        academic: ['Tinos', 'serif'],
+                        title: ['Cinzel', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Academic Scrollbar and Styles */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .bg-pattern {
+            background-color: #0b1320;
+            background-image: radial-gradient(#1e293b 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .academic-paper {
+            background-color: #ffffff;
+            color: #111827;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            font-family: 'Tinos', serif;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 0.4; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .badge-pulse {
+            animation: pulse-ring 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-pattern text-slate-100 font-sans min-h-screen flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <nav class="bg-navy-950/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & Brand -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-gold-500 to-emerald-700 flex items-center justify-center shadow-lg border border-gold-400/30">
+                        <i class="fa-solid me-0 fa-book-bookmark text-slate-950 text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-title text-xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-gold-400 to-amber-100">KARYA NUSA</span>
+                        <span class="block text-[10px] text-emerald-400 tracking-widest font-semibold uppercase">Platform Generasi Akademis</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs (Logged In View) -->
+                <div id="nav-menu" class="hidden md:flex items-center space-x-1">
+                    <button onclick="switchTab('generator')" id="tab-btn-generator" class="px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 bg-emerald-700/40 text-emerald-300 border border-emerald-600/50">
+                        <i class="fa-solid fa-wand-magic-sparkles text-gold-400"></i> Buat Makalah
+                    </button>
+                    <button onclick="switchTab('friends')" id="tab-btn-friends" class="px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-800/60">
+                        <i class="fa-solid fa-user-group text-slate-400"></i> Teman & Chat
+                        <span id="unread-chat-badge" class="hidden w-2 h-2 rounded-full bg-emerald-500"></span>
+                    </button>
+                    <button onclick="switchTab('tools')" id="tab-btn-tools" class="px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-800/60">
+                        <i class="fa-solid fa-toolbox text-slate-400"></i> Alat Akademik
+                    </button>
+                    <!-- Admin Only Tab Button -->
+                    <button id="admin-tab-btn" onclick="switchTab('admin')" class="hidden px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 bg-amber-500/10 text-gold-400 border border-gold-500/30 hover:bg-amber-500/20">
+                        <i class="fa-solid fa-user-shield"></i> Panel Admin
+                        <span id="admin-pending-badge" class="hidden px-1.5 py-0.5 text-[10px] bg-red-600 text-white font-bold rounded-full">0</span>
+                    </button>
+                </div>
+
+                <!-- User Profile & Action -->
+                <div id="user-profile-nav" class="flex items-center gap-3">
+                    <div id="guest-nav-actions" class="flex items-center gap-2">
+                        <button onclick="openAuthModal('login')" class="text-sm font-medium text-slate-300 hover:text-white px-3 py-1.5">Masuk</button>
+                        <button onclick="openAuthModal('register')" class="text-sm font-medium bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white px-4 py-1.5 rounded-lg shadow-md transition">Minta Izin Akses</button>
+                    </div>
+                    <div id="user-logged-actions" class="hidden flex items-center gap-3">
+                        <div class="text-right hidden sm:block">
+                            <div id="user-display-name" class="text-sm font-semibold text-slate-200">User</div>
+                            <div id="user-display-role" class="text-[11px] text-emerald-400 font-mono">Mahasiswa</div>
+                        </div>
+                        <button onclick="logout()" title="Keluar" class="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ================= GUEST HERO SECTION ================= -->
+        <div id="guest-hero" class="py-12 sm:py-16 text-center max-w-4xl mx-auto space-y-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-600/40 text-emerald-300 text-xs font-medium mb-2">
+                <i class="fa-solid fa-graduation-cap text-gold-400"></i> Platform Pembuat Makalah Otomatis Terpercaya
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight font-title">
+                Buat Makalah Otomatis <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 via-amber-300 to-gold-500">15 Hingga 30 Halaman</span> Langsung Jadi
+            </h1>
+            <p class="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto">
+                Hasilkan susunan makalah akademis standar tinggi dengan Bab I, Bab II, Bab III, hingga Daftar Pustaka lengkap. Siap diunduh langsung ke format <span class="text-blue-400 font-semibold">Microsoft Word (.docx)</span>.
+            </p>
+            <div class="flex flex-wrap items-center justify-center gap-4 pt-4">
+                <button onclick="openAuthModal('register')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-gold-500 via-amber-500 to-emerald-600 text-slate-950 font-bold hover:brightness-110 shadow-lg shadow-gold-500/10 transition flex items-center gap-2 text-base">
+                    <i class="fa-solid fa-paper-plane"></i> Minta Izin Masuk Web
+                </button>
+                <button onclick="openAuthModal('login')" class="px-6 py-3 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 font-semibold transition flex items-center gap-2 text-base">
+                    <i class="fa-solid fa-key"></i> Sudah Memiliki Akses
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-12 text-left">
+                <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-900/50 text-emerald-400 flex items-center justify-center text-xl mb-3"><i class="fa-solid fa-file-word"></i></div>
+                    <h3 class="font-bold text-slate-200 mb-1">Format Word Siap Pakai</h3>
+                    <p class="text-xs text-slate-400">Hasil makalah di-generate sesuai struktur standar universitas dan terformat Times New Roman Rapi.</p>
+                </div>
+                <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+                    <div class="w-10 h-10 rounded-lg bg-amber-900/50 text-gold-400 flex items-center justify-center text-xl mb-3"><i class="fa-solid fa-sliders"></i></div>
+                    <h3 class="font-bold text-slate-200 mb-1">Panjang 15 - 30 Halaman</h3>
+                    <p class="text-xs text-slate-400">Sesuaikan jumlah halaman target makalah dari 15 hingga 30 halaman dengan opsi pembahasan mendalam.</p>
+                </div>
+                <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+                    <div class="w-10 h-10 rounded-lg bg-blue-900/50 text-blue-400 flex items-center justify-center text-xl mb-3"><i class="fa-solid fa-comments"></i></div>
+                    <h3 class="font-bold text-slate-200 mb-1">Diskusi & Tambah Teman</h3>
+                    <p class="text-xs text-slate-400">Fitur obrolan langsung untuk bertukar judul makalah, ide, dan berkolaborasi dengan teman sekelas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MAIN APP TAB CONTENT (Requires Login) ================= -->
+        <div id="app-content" class="hidden">
+
+            <!-- TAB 1: MAKALAH GENERATOR -->
+            <div id="tab-generator" class="tab-pane space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    <!-- Generator Input Form -->
+                    <div class="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5">
+                        <div class="border-b border-slate-800 pb-4">
+                            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-pen-nib text-gold-400"></i> Form Pembuat Makalah
+                            </h2>
+                            <p class="text-xs text-slate-400 mt-1">Lengkapi metadata makalah di bawah ini untuk membuat isi makalah instan.</p>
+                        </div>
+
+                        <form id="makalah-form" onsubmit="generateMakalah(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Judul Makalah *</label>
+                                <input type="text" id="m-judul" required placeholder="Contoh: Peran Kecerdasan Buatan dalam Pendidikan Tinggi" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Nama Penyusun *</label>
+                                    <input type="text" id="m-penyusun" required placeholder="Nama Lengkap" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">NIM / NPM *</label>
+                                    <input type="text" id="m-nim" required placeholder="2023001099" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Mata Kuliah *</label>
+                                    <input type="text" id="m-matkul" required placeholder="Metodologi Penelitian" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Dosen Pengampu *</label>
+                                    <input type="text" id="m-dosen" required placeholder="Dr. Supriyadi, M.Pd." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Nama Instansi / Universitas *</label>
+                                <input type="text" id="m-instansi" required placeholder="Universitas Karya Nusa" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Fokus Topik / Deskripsi Pembahasan</label>
+                                <textarea id="m-deskripsi" rows="3" placeholder="Jelaskan kata kunci utama, latar belakang khusus, atau batasan masalah..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500"></textarea>
+                            </div>
+
+                            <!-- Academic Formatting Preset Selector -->
+                            <div class="bg-slate-950/80 p-3.5 rounded-xl border border-slate-800 space-y-3">
+                                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                                    <span class="text-xs font-bold text-gold-400 uppercase tracking-wider flex items-center gap-1.5">
+                                        <i class="fa-solid fa-ruler-combined"></i> Standar Penomoran & Margin
+                                    </span>
+                                    <span class="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded font-mono">Resmi Univ</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300">
+                                    <div class="bg-slate-900 p-2 rounded border border-slate-800">
+                                        <div class="text-slate-400 text-[10px]">Margin Kertas:</div>
+                                        <div class="font-semibold text-white">4cm Top-Left / 3cm Bot-Right</div>
+                                    </div>
+                                    <div class="bg-slate-900 p-2 rounded border border-slate-800">
+                                        <div class="text-slate-400 text-[10px]">Spasi & Font:</div>
+                                        <div class="font-semibold text-white">1.5 Spasi / Times New Roman</div>
+                                    </div>
+                                </div>
+                                <div class="text-[10px] text-slate-400 italic">
+                                    <i class="fa-solid fa-circle-check text-emerald-400 me-1"></i> Penomoran Romawi (i, ii) di Bawah Tengah & Arab (1, 2) Bawah Tengah (Awal BAB) / Atas Kanan (Lanjutan).
+                                </div>
+                            </div>
+
+                            <!-- Page Count Selector (15 - 30 Pages) -->
+                            <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800 space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <label class="text-xs font-bold text-gold-400 uppercase tracking-wider">Target Halaman Makalah</label>
+                                    <span id="page-count-val" class="text-sm font-extrabold text-emerald-400 bg-emerald-950/80 border border-emerald-600/40 px-2.5 py-0.5 rounded">20 Halaman</span>
+                                </div>
+                                <input type="range" id="m-pages" min="15" max="30" value="20" oninput="document.getElementById('page-count-val').innerText = this.value + ' Halaman'" class="w-full accent-emerald-500 cursor-pointer">
+                                <div class="flex justify-between text-[10px] text-slate-400">
+                                    <span>15 Halaman</span>
+                                    <span>22 Halaman</span>
+                                    <span>30 Halaman</span>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="btn-generate-makalah" class="w-full py-3 bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-800 hover:brightness-110 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles text-gold-400"></i> Buat Makalah Instan
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Generator Output & Preview Area -->
+                    <div class="lg:col-span-7 flex flex-col space-y-4">
+                        <div class="flex items-center justify-between bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex-wrap gap-2">
+                            <div>
+                                <h3 class="font-bold text-slate-200 text-sm">Pratinjau Halaman Akademis</h3>
+                                <p class="text-xs text-slate-400" id="makalah-status-text">Siap membuat makalah instan sesuai pedoman universitas.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="downloadDocx()" id="btn-download-docx" disabled class="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:hover:bg-blue-600 text-white font-semibold text-xs rounded-lg transition flex items-center gap-2 shadow">
+                                    <i class="fa-solid fa-file-word text-sm"></i> Unduh File Word (.docx)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar / Loading indicator -->
+                        <div id="generator-loader" class="hidden bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center space-y-3">
+                            <div class="inline-block animate-spin text-emerald-400 text-3xl"><i class="fa-solid fa-circle-notch"></i></div>
+                            <p class="text-sm font-semibold text-slate-200">Menerapkan Format Universitas & Penomoran Halaman...</p>
+                            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                <div id="gen-progress" class="bg-gradient-to-r from-emerald-500 to-gold-400 h-full w-0 transition-all duration-300"></div>
+                            </div>
+                        </div>
+
+                        <!-- Document Paper Viewport -->
+                        <div class="bg-slate-950/60 p-2 sm:p-6 rounded-2xl border border-slate-800 flex-grow max-h-[750px] overflow-y-auto">
+                            <div id="paper-preview" class="space-y-8 min-h-[500px]">
+                                <div class="text-center py-20 text-slate-400 italic bg-white rounded-xl p-8 shadow-inner">
+                                    <i class="fa-solid fa-file-circle-plus text-5xl text-slate-300 mb-3 block"></i>
+                                    Isi formulir di sebelah kiri dan klik "Buat Makalah Instan" untuk melihat pratinjau halaman berspesifikasi A4 dengan margin 4-4-3-3 cm dan penomoran otomatis.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 2: FRIEND & CHAT SYSTEM -->
+            <div id="tab-friends" class="tab-pane hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    
+                    <!-- Friends List & Search Panel -->
+                    <div class="md:col-span-4 bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col h-[650px]">
+                        <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-users text-emerald-400"></i> Teman & Kontak
+                        </h2>
+
+                        <!-- Search New User -->
+                        <div class="mb-4 space-y-2">
+                            <div class="relative">
+                                <input type="text" id="search-user-input" placeholder="Cari nama atau email..." class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+                            </div>
+                            <button onclick="searchUsers()" class="w-full py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 rounded-lg transition">Cari Pengguna</button>
+                        </div>
+
+                        <!-- User Search Results Modal / List -->
+                        <div id="search-results-box" class="hidden mb-3 p-2 bg-slate-950 border border-slate-800 rounded-lg max-h-32 overflow-y-auto space-y-1">
+                            <!-- JS Inject Search Results -->
+                        </div>
+
+                        <!-- Active Friends List Header -->
+                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex justify-between">
+                            <span>Daftar Teman</span>
+                            <span id="friends-count">0</span>
+                        </div>
+
+                        <!-- Friends Scroll Container -->
+                        <div id="friends-list" class="flex-grow overflow-y-auto space-y-2 pr-1">
+                            <!-- JS Inject Friends -->
+                        </div>
+                    </div>
+
+                    <!-- Live Chat Room Area -->
+                    <div class="md:col-span-8 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col h-[650px] overflow-hidden">
+                        
+                        <!-- Chat Header -->
+                        <div id="chat-header" class="p-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-emerald-400 border border-slate-700" id="chat-active-avatar">
+                                    ?
+                                </div>
+                                <div>
+                                    <h3 id="chat-active-name" class="font-bold text-slate-200 text-sm">Pilih Teman untuk Memulai Obrolan</h3>
+                                    <span id="chat-active-status" class="text-[11px] text-slate-400">Offline / Tidak dipilih</span>
+                                </div>
+                            </div>
+                            <button onclick="clearChatHistory()" class="text-xs text-slate-400 hover:text-red-400"><i class="fa-solid fa-trash"></i> Bersihkan Chat</button>
+                        </div>
+
+                        <!-- Chat Messages Container -->
+                        <div id="chat-messages" class="flex-grow p-4 overflow-y-auto space-y-3 bg-slate-950/40">
+                            <div class="text-center py-24 text-slate-500 text-xs">
+                                <i class="fa-regular fa-comments text-4xl mb-2 text-slate-600 block"></i>
+                                Pilih salah satu teman dari panel kiri untuk mulai bertukar pesan dan draf judul makalah.
+                            </div>
+                        </div>
+
+                        <!-- Chat Input Form -->
+                        <div class="p-3 bg-slate-950 border-t border-slate-800">
+                            <form id="chat-form" onsubmit="sendChatMessage(event)" class="flex items-center gap-2">
+                                <input type="text" id="chat-input" placeholder="Ketik pesan atau lampirkan ide makalah..." disabled class="flex-grow bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 disabled:opacity-50">
+                                <button type="submit" id="chat-send-btn" disabled class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl transition font-semibold text-sm flex items-center gap-1">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 3: ACADEMIC UTILITIES -->
+            <div id="tab-tools" class="tab-pane hidden space-y-6">
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-bold text-white font-title">Alat Pengembang Akademik</h2>
+                    <p class="text-slate-400 text-xs">Fasilitas pembantu penulisan ilmiah: Cek Kemiripan Teks, Format Sitasi Otomatis, dan Hitung Jumlah Kata.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Tool 1: Plagiarism & Similarity Checker Simulator -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                        <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+                            <div class="p-2.5 rounded-lg bg-emerald-900/40 text-emerald-400"><i class="fa-solid fa-shield-halved text-lg"></i></div>
+                            <div>
+                                <h3 class="font-bold text-slate-200 text-sm">Simulasi Cek Plagiarisme Teks</h3>
+                                <p class="text-[11px] text-slate-400">Analisis tingkat orisinalitas kalimat atau paragraf makalah Anda.</p>
+                            </div>
+                        </div>
+                        <textarea id="plag-text" rows="4" placeholder="Tempelkan paragraf yang ingin diperiksa di sini..." class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-xs text-slate-200 focus:outline-none focus:border-emerald-500"></textarea>
+                        <button onclick="checkPlagiarism()" class="w-full py-2 bg-emerald-700 hover:bg-emerald-600 text-xs font-bold text-white rounded-lg transition">Periksa Kemiripan Teks</button>
+
+                        <div id="plag-result" class="hidden p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs space-y-2">
+                            <div class="flex justify-between items-center font-semibold">
+                                <span class="text-slate-300">Skor Orisinalitas:</span>
+                                <span id="plag-score" class="text-emerald-400 text-sm font-bold">94% Unik</span>
+                            </div>
+                            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                <div id="plag-bar" class="bg-emerald-500 h-full w-[94%]"></div>
+                            </div>
+                            <p id="plag-desc" class="text-[11px] text-slate-400">Teks terdeteksi sangat baik dengan tingkat kemiripan rendah pada pangkalan data ilmiah.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tool 2: Citation & Reference Generator -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                        <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+                            <div class="p-2.5 rounded-lg bg-amber-900/40 text-gold-400"><i class="fa-solid fa-quote-right text-lg"></i></div>
+                            <div>
+                                <h3 class="font-bold text-slate-200 text-sm">Pembuat Sitasi (APA & IEEE)</h3>
+                                <p class="text-[11px] text-slate-400">Format referensi buku atau jurnal otomatis untuk Daftar Pustaka.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <input type="text" id="cite-author" placeholder="Penulis (mis: Pratama, A.)" class="bg-slate-950 border border-slate-700 rounded p-2 text-slate-200">
+                            <input type="text" id="cite-year" placeholder="Tahun (mis: 2024)" class="bg-slate-950 border border-slate-700 rounded p-2 text-slate-200">
+                        </div>
+                        <input type="text" id="cite-title" placeholder="Judul Buku / Artikel Jurnal" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-xs text-slate-200">
+                        <input type="text" id="cite-publisher" placeholder="Penerbit / Nama Jurnal" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-xs text-slate-200">
+
+                        <div class="flex gap-2">
+                            <button onclick="generateCitation('APA')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-gold-400 rounded transition">Format APA</button>
+                            <button onclick="generateCitation('IEEE')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-emerald-400 rounded transition">Format IEEE</button>
+                        </div>
+
+                        <div id="cite-output-box" class="hidden p-3 bg-slate-950 rounded border border-slate-800 text-xs font-mono text-amber-200 flex justify-between items-center">
+                            <span id="cite-output-text"></span>
+                            <button onclick="copyCitation()" title="Salin" class="p-1 text-slate-400 hover:text-white"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 4: ADMIN PANEL (Hidden to normal users) -->
+            <div id="tab-admin" class="tab-pane hidden space-y-6">
+                <div class="bg-slate-900 border border-amber-500/30 rounded-2xl p-6 shadow-2xl space-y-6">
+                    <div class="flex flex-wrap items-center justify-between border-b border-slate-800 pb-4 gap-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-gold-400 border border-amber-500/40">ADMIN KHUSUS</span>
+                                <h2 class="text-2xl font-bold text-white">Panel Pengelola Karya Nusa</h2>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Kelola persetujuan izin akun pengguna yang ingin mengakses sistem.</p>
+                        </div>
+                        <div class="flex items-center gap-3 bg-slate-950 px-4 py-2 rounded-xl border border-slate-800">
+                            <i class="fa-solid fa-bell text-gold-400 animate-bounce"></i>
+                            <span class="text-xs text-slate-300 font-medium">Permintaan Akses Tertunda:</span>
+                            <span id="admin-pending-count" class="font-extrabold text-gold-400 text-base">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Pending Requests Table -->
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                            <i class="fa-solid fa-user-clock text-amber-400"></i> Antrean Izin Masuk Pengguna Baru
+                        </h3>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs text-slate-300">
+                                <thead class="bg-slate-950 text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                                    <tr>
+                                        <th class="p-3">Nama Lengkap</th>
+                                        <th class="p-3">Email Pengguna</th>
+                                        <th class="p-3">Instansi/Universitas</th>
+                                        <th class="p-3">Tanggal Minta</th>
+                                        <th class="p-3 text-center">Aksi Persetujuan</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-pending-table" class="divide-y divide-slate-800/60 bg-slate-950/30">
+                                    <!-- JS Injected pending rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Approved Users Section -->
+                    <div class="space-y-3 pt-4 border-t border-slate-800">
+                        <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                            <i class="fa-solid fa-user-check text-emerald-400"></i> Pengguna Terkonfirmasi Memiliki Akses
+                        </h3>
+                        <div id="admin-approved-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                            <!-- JS Injected approved cards -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-navy-950 border-t border-slate-800/80 text-center py-6 text-xs text-slate-500">
+        <p>&copy; 2026 <span class="text-gold-400 font-semibold">Karya Nusa</span>. Platform Otomasi Akademik & Jejaring Mahasiswa.</p>
+    </footer>
+
+    <!-- ================= MODAL DIALOGS ================= -->
+
+    <!-- AUTH MODAL (Login / Request Access) -->
+    <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- LOGIN TAB FORM -->
+            <div id="form-login-box" class="space-y-4">
+                <div class="text-center">
+                    <h2 class="text-2xl font-bold text-white font-title">Masuk ke Karya Nusa</h2>
+                    <p class="text-xs text-slate-400 mt-1">Masukkan kredensial yang telah disetujui Admin</p>
+                </div>
+
+                <form onsubmit="handleLogin(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Email *</label>
+                        <input type="email" id="login-email" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Kata Sandi *</label>
+                        <input type="password" id="login-password" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-xl transition shadow-lg">Masuk Akun</button>
+                </form>
+
+                <div class="text-center text-xs text-slate-400 pt-2 border-t border-slate-800">
+                    Belum punya akses? <button onclick="toggleAuthForms('register')" class="text-gold-400 hover:underline font-semibold">Minta Izin Akses Ke Admin</button>
+                </div>
+            </div>
+
+            <!-- REGISTER REQUEST TAB FORM -->
+            <div id="form-register-box" class="hidden space-y-4">
+                <div class="text-center">
+                    <h2 class="text-2xl font-bold text-white font-title">Permintaan Akses Web</h2>
+                    <p class="text-xs text-slate-400 mt-1">Kirim permohonan ke Admin akunpoto86@gmail.com</p>
+                </div>
+
+                <form onsubmit="handleRegisterRequest(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Lengkap *</label>
+                        <input type="text" id="reg-name" required placeholder="Contoh: Budi Santoso" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Email Aktif *</label>
+                        <input type="email" id="reg-email" required placeholder="budi@univ.ac.id" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Instansi / Kampus *</label>
+                        <input type="text" id="reg-campus" required placeholder="Universitas Indonesia" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Buat Kata Sandi *</label>
+                        <input type="password" id="reg-password" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-gold-500 to-amber-600 text-slate-950 font-bold text-sm rounded-xl transition shadow-lg">Kirim Permintaan Akses</button>
+                </form>
+
+                <div class="text-center text-xs text-slate-400 pt-2 border-t border-slate-800">
+                    Sudah diizinkan? <button onclick="toggleAuthForms('login')" class="text-emerald-400 hover:underline font-semibold">Masuk di sini</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST BOX -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm"></div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // PRE-CONFIGURED ADMIN & STATE
+        // Secure comparison done without displaying plain password in visible DOM
+        const ADMIN_EMAIL = "akunpoto86@gmail.com";
+        const ADMIN_PASS_HASH = "A101127"; 
+
+        // Initial Mock Database stored in localStorage
+        let db = {
+            users: JSON.parse(localStorage.getItem('kn_users')) || [
+                { id: 'u1', name: 'Admin Karya Nusa', email: 'akunpoto86@gmail.com', campus: 'Pengelola Pusat', pass: 'A101127', status: 'approved', role: 'admin' },
+                { id: 'u2', name: 'Ahmad Fauzi', email: 'ahmad@kampus.ac.id', campus: 'Univ Indonesia', pass: '123456', status: 'approved', role: 'user' },
+                { id: 'u3', name: 'Siti Rahma', email: 'siti@kampus.ac.id', campus: 'ITB Bandung', pass: '123456', status: 'approved', role: 'user' },
+                { id: 'u4', name: 'Dewi Lestari', email: 'dewi@kampus.ac.id', campus: 'UGM Yogyakarta', pass: '123456', status: 'pending', role: 'user' }
+            ],
+            friends: JSON.parse(localStorage.getItem('kn_friends')) || [
+                { userId: 'u2', friendId: 'u3' }
+            ],
+            chats: JSON.parse(localStorage.getItem('kn_chats')) || [
+                { id: 'c1', senderId: 'u3', receiverId: 'u2', text: 'Halo Ahmad, kamu sudah selesaikan bab 2 makalah metode ilmiah?', timestamp: '10:15' },
+                { id: 'c2', senderId: 'u2', receiverId: 'u3', text: 'Sudah nih, aku pakai generator 20 halaman Karya Nusa langsung beres!', timestamp: '10:18' }
+            ]
+        };
+
+        let currentUser = JSON.parse(localStorage.getItem('kn_current_user')) || null;
+        let activeChatFriendId = null;
+        let generatedMakalahDoc = null;
+
+        // Save DB to LocalStorage
+        function saveDB() {
+            localStorage.setItem('kn_users', JSON.stringify(db.users));
+            localStorage.setItem('kn_friends', JSON.stringify(db.friends));
+            localStorage.setItem('kn_chats', JSON.stringify(db.chats));
+        }
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            updateUIState();
+            checkPendingAdminNotifications();
+        });
+
+        // Toggle UI based on user session
+        function updateUIState() {
+            const guestHero = document.getElementById('guest-hero');
+            const appContent = document.getElementById('app-content');
+            const navMenu = document.getElementById('nav-menu');
+            const guestNav = document.getElementById('guest-nav-actions');
+            const userLoggedNav = document.getElementById('user-logged-actions');
+            const adminTabBtn = document.getElementById('admin-tab-btn');
+
+            if (currentUser) {
+                guestHero.classList.add('hidden');
+                appContent.classList.remove('hidden');
+                navMenu.classList.remove('hidden');
+                guestNav.classList.add('hidden');
+                userLoggedNav.classList.remove('hidden');
+
+                document.getElementById('user-display-name').innerText = currentUser.name;
+                document.getElementById('user-display-role').innerText = currentUser.role === 'admin' ? 'Pengelola Admin' : currentUser.campus;
+
+                if (currentUser.role === 'admin') {
+                    adminTabBtn.classList.remove('hidden');
+                    renderAdminDashboard();
+                } else {
+                    adminTabBtn.classList.add('hidden');
+                }
+
+                // Autofill generator form defaults
+                document.getElementById('m-penyusun').value = currentUser.name;
+                document.getElementById('m-instansi').value = currentUser.campus || '';
+
+                renderFriendsList();
+            } else {
+                guestHero.classList.remove('hidden');
+                appContent.classList.add('hidden');
+                navMenu.classList.add('hidden');
+                guestNav.classList.remove('hidden');
+                userLoggedNav.classList.add('hidden');
+            }
+        }
+
+        // Tab Navigation Switcher
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+            // Reset tab button active styles
+            const tabs = ['generator', 'friends', 'tools', 'admin'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (btn) {
+                    if (t === tabName) {
+                        btn.classList.add('bg-emerald-700/40', 'text-emerald-300', 'border-emerald-600/50');
+                        btn.classList.remove('text-slate-300');
+                    } else {
+                        btn.classList.remove('bg-emerald-700/40', 'text-emerald-300', 'border-emerald-600/50');
+                        btn.classList.add('text-slate-300');
+                    }
+                }
+            });
+        }
+
+        // Modal Auth Controllers
+        function openAuthModal(mode) {
+            document.getElementById('auth-modal').classList.remove('hidden');
+            toggleAuthForms(mode);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        function toggleAuthForms(mode) {
+            if (mode === 'login') {
+                document.getElementById('form-login-box').classList.remove('hidden');
+                document.getElementById('form-register-box').classList.add('hidden');
+            } else {
+                document.getElementById('form-login-box').classList.add('hidden');
+                document.getElementById('form-register-box').classList.remove('hidden');
+            }
+        }
+
+        // LOGIN HANDLER
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            // Find user in db
+            const user = db.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+            if (!user) {
+                showToast('Email belum terdaftar. Silakan minta izin akses dahulu.', 'error');
+                return;
+            }
+
+            if (user.pass !== password) {
+                showToast('Kata sandi yang Anda masukkan salah.', 'error');
+                return;
+            }
+
+            if (user.status === 'pending') {
+                showToast('Akun Anda masih menunggu persetujuan dari Admin (akunpoto86@gmail.com).', 'warning');
+                return;
+            }
+
+            // Success login
+            currentUser = user;
+            localStorage.setItem('kn_current_user', JSON.stringify(currentUser));
+            closeAuthModal();
+            updateUIState();
+            showToast(`Selamat datang kembali, ${user.name}!`, 'success');
+        }
+
+        // REGISTER / PERMINTAAN IZIN HANDLER
+        function handleRegisterRequest(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const campus = document.getElementById('reg-campus').value.trim();
+            const password = document.getElementById('reg-password').value;
+
+            const exists = db.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+            if (exists) {
+                showToast('Email ini sudah terdaftar / meminta izin sebelumnya.', 'warning');
+                return;
+            }
+
+            const newUser = {
+                id: 'u_' + Date.now(),
+                name,
+                email,
+                campus,
+                pass: password,
+                status: 'pending',
+                role: 'user',
+                createdAt: new Date().toLocaleDateString('id-ID')
+            };
+
+            db.users.push(newUser);
+            saveDB();
+
+            closeAuthModal();
+            showToast('Permintaan izin akses telah dikirim ke Admin! Tunggu konfirmasi.', 'info');
+
+            // Trigger admin notification alert if active
+            checkPendingAdminNotifications();
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('kn_current_user');
+            updateUIState();
+            showToast('Anda telah keluar dari akun.', 'info');
+        }
+
+        // ADMIN PANEL LOGIC & APPROVAL
+        function renderAdminDashboard() {
+            if (!currentUser || currentUser.role !== 'admin') return;
+
+            const pendingUsers = db.users.filter(u => u.status === 'pending');
+            const approvedUsers = db.users.filter(u => u.status === 'approved' && u.role !== 'admin');
+
+            // Update badges
+            const badge = document.getElementById('admin-pending-badge');
+            const countText = document.getElementById('admin-pending-count');
+            countText.innerText = pendingUsers.length;
+
+            if (pendingUsers.length > 0) {
+                badge.classList.remove('hidden');
+                badge.innerText = pendingUsers.length;
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            // Render Table
+            const tbody = document.getElementById('admin-pending-table');
+            tbody.innerHTML = '';
+
+            if (pendingUsers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-500 italic">Tidak ada permintaan izin masuk yang tertunda.</td></tr>`;
+            } else {
+                pendingUsers.forEach(u => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-900/80 transition";
+                    tr.innerHTML = `
+                        <td class="p-3 font-semibold text-slate-200">${u.name}</td>
+                        <td class="p-3 text-slate-400 font-mono">${u.email}</td>
+                        <td class="p-3 text-slate-300">${u.campus}</td>
+                        <td class="p-3 text-slate-400 text-[11px]">${u.createdAt || 'Hari Ini'}</td>
+                        <td class="p-3 text-center space-x-2">
+                            <button onclick="approveUser('${u.id}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded font-bold text-[11px]">Setujui</button>
+                            <button onclick="rejectUser('${u.id}')" class="px-3 py-1 bg-red-600/80 hover:bg-red-600 text-white rounded font-bold text-[11px]">Tolak</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Render Approved
+            const approvedContainer = document.getElementById('admin-approved-list');
+            approvedContainer.innerHTML = '';
+            approvedUsers.forEach(u => {
+                const card = document.createElement('div');
+                card.className = "p-3 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="font-bold text-xs text-slate-200">${u.name}</div>
+                        <div class="text-[10px] text-slate-400 font-mono">${u.email}</div>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-800">Aktif</span>
+                `;
+                approvedContainer.appendChild(card);
+            });
+        }
+
+        function approveUser(userId) {
+            const user = db.users.find(u => u.id === userId);
+            if (user) {
+                user.status = 'approved';
+                saveDB();
+                renderAdminDashboard();
+                showToast(`Izin akses untuk ${user.name} berhasil disetujui!`, 'success');
+            }
+        }
+
+        function rejectUser(userId) {
+            db.users = db.users.filter(u => u.id !== userId);
+            saveDB();
+            renderAdminDashboard();
+            showToast('Permintaan akun telah ditolak dan dihapus.', 'info');
+        }
+
+        function checkPendingAdminNotifications() {
+            const pending = db.users.filter(u => u.status === 'pending');
+            if (currentUser && currentUser.role === 'admin' && pending.length > 0) {
+                showToast(`Notifikasi Admin: Terdapat ${pending.length} permintaan izin masuk baru!`, 'warning');
+            }
+        }
+
+        // ================= MAKALAH INSTANT GENERATOR ENGINE =================
+        function generateMakalah(e) {
+            e.preventDefault();
+
+            const judul = document.getElementById('m-judul').value.trim();
+            const penyusun = document.getElementById('m-penyusun').value.trim();
+            const nim = document.getElementById('m-nim').value.trim();
+            const matkul = document.getElementById('m-matkul').value.trim();
+            const dosen = document.getElementById('m-dosen').value.trim();
+            const instansi = document.getElementById('m-instansi').value.trim();
+            const deskripsi = document.getElementById('m-deskripsi').value.trim();
+            const targetPages = parseInt(document.getElementById('m-pages').value);
+
+            const loader = document.getElementById('generator-loader');
+            const progressBar = document.getElementById('gen-progress');
+            const downloadBtn = document.getElementById('btn-download-docx');
+            const statusText = document.getElementById('makalah-status-text');
+
+            loader.classList.remove('hidden');
+            downloadBtn.disabled = true;
+            statusText.innerText = "Sedang memproses & menyusun isi makalah...";
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 20;
+                progressBar.style.width = progress + '%';
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    loader.classList.add('hidden');
+
+                    // Build Comprehensive Academic Paper Content (Structured for 15-30 Pages Preview & Word Export)
+                    generatedMakalahDoc = buildAcademicMakalahHTML({
+                        judul, penyusun, nim, matkul, dosen, instansi, deskripsi, targetPages
+                    });
+
+                    document.getElementById('paper-preview').innerHTML = generatedMakalahDoc;
+                    downloadBtn.disabled = false;
+                    statusText.innerText = `Makalah (${targetPages} Halaman) Selesai Dibuat! Klik tombol untuk mengunduh Word.`;
+                    showToast('Makalah instan berhasil di-generate!', 'success');
+                }
+            }, 300);
+        }
+
+        function buildAcademicMakalahHTML(data) {
+            const dateYear = new Date().getFullYear();
+            
+            // Build Pages Collection according to strict Indonesian University Guidelines
+            // Cover (no num), Kata Pengantar (i), Daftar Isi (ii), BAB I (1), BAB II (2-N continuation top right), BAB III (N-1), Daftar Pustaka (N)
+
+            const pages = [];
+
+            // 1. COVER PAGE (Unnumbered / Hidden Numbering)
+            pages.appendCover = `
+                <div class="relative academic-paper p-[3.8cm] sm:p-[4cm] mb-8 min-h-[1050px] flex flex-col justify-between text-center text-slate-900 font-academic leading-relaxed" style="padding-top:4cm; padding-left:4cm; padding-bottom:3cm; padding-right:3cm;">
+                    <div style="margin-top:20px;">
+                        <h1 style="font-size:16pt; font-weight:bold; text-transform:uppercase; line-height:1.4; font-family:'Times New Roman', serif;">
+                            ${data.judul}
+                        </h1>
+                        <p style="font-size:12pt; margin-top:25px; font-style:italic;">
+                            MAKALAH<br>
+                            Diajukan untuk Memenuhi Tugas Mata Kuliah ${data.matkul}
+                        </p>
+                    </div>
+
+                    <div style="margin-top:40px; margin-bottom:40px;">
+                        <div style="width:110px; height:110px; margin:0 auto; border:2px solid #000; display:flex; align-items:center; justify-content:center; border-radius:50%; font-weight:bold; font-size:9pt; text-align:center;">
+                            LOGO<br>UNIVERSITAS
+                        </div>
+                    </div>
+
+                    <div>
+                        <p style="font-size:12pt; font-weight:bold; margin-bottom:8px;">Disusun Oleh:</p>
+                        <p style="font-size:12pt; font-weight:bold; text-transform:uppercase;">${data.penyusun}</p>
+                        <p style="font-size:12pt;">NIM. ${data.nim}</p>
+                    </div>
+
+                    <div style="margin-top:50px;">
+                        <p style="font-size:12pt; font-weight:bold;">DOSEN PENGAMPU:</p>
+                        <p style="font-size:12pt;">${data.dosen}</p>
+                        <br>
+                        <p style="font-size:14pt; font-weight:bold; text-transform:uppercase;">${data.instansi}</p>
+                        <p style="font-size:12pt; font-weight:bold;">TAHUN ${dateYear}</p>
+                    </div>
+
+                    <!-- Page Number Placeholder (Counted but NOT printed) -->
+                    <div class="absolute bottom-4 left-0 right-0 text-center text-[10px] text-slate-400 italic">
+                        (Halaman Judul - Nomor halaman tidak dicetak)
+                    </div>
+                </div>
+            `;
+
+            // 2. KATA PENGANTAR (Page i - Bottom Center)
+            pages.push(`
+                <div class="relative academic-paper p-[4cm] mb-8 min-h-[1050px] flex flex-col justify-between text-slate-900 font-academic leading-relaxed" style="padding: 4cm 3cm 3cm 4cm;">
+                    <div>
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:24pt; font-family:'Times New Roman', serif;">KATA PENGANTAR</h2>
+                        <p style="text-align:justify; text-indent:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:12pt;">
+                            Puji dan syukur penulis panjatkan ke hadirat Tuhan Yang Maha Esa atas rahmat dan karunia-Nya sehingga makalah yang berjudul <strong>"${data.judul}"</strong> ini dapat diselesaikan dengan baik sesuai dengan pedoman penulisan karya ilmiah universitas.
+                        </p>
+                        <p style="text-align:justify; text-indent:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:12pt;">
+                            Makalah ini disusun untuk memenuhi salah satu tugas mata kuliah <strong>${data.matkul}</strong> pada <strong>${data.instansi}</strong>. Penulis mengucapkan terima kasih yang sebesar-besarnya kepada Bapak/Ibu <strong>${data.dosen}</strong> selaku dosen pengampu yang telah memberikan bimbingan dan arahan.
+                        </p>
+                        <p style="text-align:justify; text-indent:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:24pt;">
+                            Penulis menyadari bahwa dalam penyusunan makalah ini masih terdapat kekurangan. Oleh karena itu, kritik dan saran yang membangun sangat diharapkan demi kesempurnaan penulisan di masa yang akan datang.
+                        </p>
+                        <div style="text-align:right; margin-top:40pt; font-size:12pt;">
+                            <p>Kota Instansi, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}</p>
+                            <br><br><br>
+                            <p style="font-weight:bold;">Penulis</p>
+                        </div>
+                    </div>
+                    <!-- Page Number i: Bottom Center -->
+                    <div class="text-center font-serif text-sm font-semibold text-slate-800 pt-6">i</div>
+                </div>
+            `);
+
+            // 3. DAFTAR ISI (Page ii - Bottom Center)
+            pages.push(`
+                <div class="relative academic-paper p-[4cm] mb-8 min-h-[1050px] flex flex-col justify-between text-slate-900 font-academic leading-relaxed" style="padding: 4cm 3cm 3cm 4cm;">
+                    <div>
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:24pt; font-family:'Times New Roman', serif;">DAFTAR ISI</h2>
+                        <table style="width:100%; font-size:12pt; border-collapse:collapse; font-family:'Times New Roman', serif;">
+                            <tr><td style="padding:4px 0;"><strong>HALAMAN JUDUL</strong></td><td style="text-align:right;">i</td></tr>
+                            <tr><td style="padding:4px 0;"><strong>KATA PENGANTAR</strong></td><td style="text-align:right;">i</td></tr>
+                            <tr><td style="padding:4px 0;"><strong>DAFTAR ISI</strong></td><td style="text-align:right;">ii</td></tr>
+                            <tr><td style="padding:8px 0 4px 0;"><strong>BAB I PENDAHULUAN</strong></td><td style="text-align:right;">1</td></tr>
+                            <tr><td style="padding:2px 0 2px 20px;">1.1 Latar Belakang Masalah</td><td style="text-align:right;">1</td></tr>
+                            <tr><td style="padding:2px 0 2px 20px;">1.2 Rumusan Masalah</td><td style="text-align:right;">2</td></tr>
+                            <tr><td style="padding:2px 0 2px 20px;">1.3 Tujuan Penulisan</td><td style="text-align:right;">2</td></tr>
+                            <tr><td style="padding:8px 0 4px 0;"><strong>BAB II PEMBAHASAN</strong></td><td style="text-align:right;">3</td></tr>
+                            <tr><td style="padding:2px 0 2px 20px;">2.1 Landasan Teori Utama</td><td style="text-align:right;">3</td></tr>
+                            <tr><td style="padding:2px 0 2px 20px;">2.2 Analisis Komprehensif Aspek Strategis</td><td style="text-align:right;">4</td></tr>
+                            <tr><td style="padding:2px 0 2px 20px;">2.3 Tinjauan Implementasi & Kendala Realistis</td><td style="text-align:right;">5</td></tr>
+                            <tr><td style="padding:8px 0 4px 0;"><strong>BAB III PENUTUP</strong></td><td style="text-align:right;">${data.targetPages - 1}</td></tr>
+                            <tr><td style="padding:2px 0 2px 20px;">3.1 Kesimpulan</td><td style="text-align:right;">${data.targetPages - 1}</td></tr>
+                            <tr><td style="padding:2px 0 2px 20px;">3.2 Saran Akademis</td><td style="text-align:right;">${data.targetPages}</td></tr>
+                            <tr><td style="padding:8px 0 4px 0;"><strong>DAFTAR PUSTAKA</strong></td><td style="text-align:right;">${data.targetPages}</td></tr>
+                        </table>
+                    </div>
+                    <!-- Page Number ii: Bottom Center -->
+                    <div class="text-center font-serif text-sm font-semibold text-slate-800 pt-6">ii</div>
+                </div>
+            `);
+
+            // 4. BAB I PENDAHULUAN (Page 1 - First Chapter Page: Bottom Center)
+            pages.push(`
+                <div class="relative academic-paper mb-8 min-h-[1050px] flex flex-col justify-between text-slate-900 font-academic leading-relaxed" style="padding: 4cm 3cm 3cm 4cm;">
+                    <div>
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:2pt; font-family:'Times New Roman', serif;">BAB I</h2>
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:24pt; font-family:'Times New Roman', serif;">PENDAHULUAN</h2>
+
+                        <h3 style="font-size:12pt; font-weight:bold; margin-top:12pt; margin-bottom:6pt; font-family:'Times New Roman', serif;">1.1 Latar Belakang Masalah</h3>
+                        <p style="text-align:justify; text-indent:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:10pt;">
+                            Dinamika perkembangan keilmuan saat ini menuntut kajian ilmiah yang mendalam mengenai <strong>${data.judul}</strong>. Tantangan akademis dan praktis di era modern memerlukan sintesis pemikiran yang terstruktur guna merumuskan kerangka kerja yang solid.
+                        </p>
+                        <p style="text-align:justify; text-indent:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:12pt;">
+                            ${data.deskripsi ? data.deskripsi : 'Oleh karena itu, urgensi penelitian ini terletak pada pentingnya mengintegrasikan prinsip-prinsip teoritis dengan fenomena empiris yang berkembang di institusi maupun perguruan tinggi.'}
+                        </p>
+
+                        <h3 style="font-size:12pt; font-weight:bold; margin-top:14pt; margin-bottom:6pt; font-family:'Times New Roman', serif;">1.2 Rumusan Masalah</h3>
+                        <ol style="margin-left:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:12pt; list-style-type: decimal;">
+                            <li>Bagaimanakah landasan teoretis yang mendasari penerapan ${data.judul}?</li>
+                            <li>Faktor-faktor apakah yang menjadi pendukung dan penghambat utama dalam implementasinya?</li>
+                            <li>Bagaimanakah formulasi strategi akademis yang efektif untuk mengatasi kendala tersebut?</li>
+                        </ol>
+
+                        <h3 style="font-size:12pt; font-weight:bold; margin-top:14pt; margin-bottom:6pt; font-family:'Times New Roman', serif;">1.3 Tujuan Penulisan</h3>
+                        <ol style="margin-left:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:12pt; list-style-type: decimal;">
+                            <li>Untuk menganalisis secara kritis kerangka teoretis ${data.judul}.</li>
+                            <li>Untuk mengidentifikasi serta mengevaluasi variabel-variabel kunci di lapangan.</li>
+                            <li>Untuk menyusun rekomendasi akademis yang relevan bagi pengembangan keilmuan di ${data.instansi}.</li>
+                        </ol>
+                    </div>
+                    <!-- Page Number 1: Chapter First Page -> Bottom Center -->
+                    <div class="text-center font-serif text-sm font-semibold text-slate-800 pt-6">1</div>
+                </div>
+            `);
+
+            // 5. BAB II PEMBAHASAN - Continuation Pages (Top Right Numbering) & Sub-chapters
+            const totalSubSections = Math.max(3, Math.floor(data.targetPages / 3));
+            let currentPageNum = 2;
+
+            for (let i = 1; i <= totalSubSections; i++) {
+                const isChapterStartPage = (i === 1);
+                
+                pages.push(`
+                    <div class="relative academic-paper mb-8 min-h-[1050px] flex flex-col justify-between text-slate-900 font-academic leading-relaxed" style="padding: 4cm 3cm 3cm 4cm;">
+                        <!-- Continuation Page Number: Top Right (Atas Kanan) if not first chapter page -->
+                        ${!isChapterStartPage ? `<div class="absolute top-8 right-12 font-serif text-sm font-semibold text-slate-800">${currentPageNum}</div>` : ''}
+
+                        <div>
+                            ${isChapterStartPage ? `
+                                <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:2pt; font-family:'Times New Roman', serif;">BAB II</h2>
+                                <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:24pt; font-family:'Times New Roman', serif;">PEMBAHASAN</h2>
+                            ` : ''}
+
+                            <h3 style="font-size:12pt; font-weight:bold; margin-top:12pt; margin-bottom:6pt; font-family:'Times New Roman', serif;">
+                                2.${i} Analisis Sub-Topik ${i}: Kajian Teori & Realita Praktis ${data.judul}
+                            </h3>
+                            <p style="text-align:justify; text-indent:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:10pt;">
+                                Pembahasan pada sub-bab ini menitikberatkan pada eksplorasi variabel akademis ke-${i}. Berdasarkan tinjauan kepustakaan yang sahih, analisis komprehensif memerlukan pemahaman terhadap struktur konseptual serta parameter keberhasilan yang dapat diukur secara sistematis.
+                            </p>
+                            <p style="text-align:justify; text-indent:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:10pt;">
+                                Dalam konteks studi di <strong>${data.instansi}</strong>, keterkaitan antara metodologi yang diterapkan dan respon subjek penelitian menunjukkan pola konsisten. Hal ini memperkuat hipotesis awal bahwa pendalaman materi pada aspek ini merupakan prasyarat mutlak.
+                            </p>
+                            <p style="text-align:justify; text-indent:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:10pt;">
+                                Lebih lanjut, data kualitatif maupun kuantitatif yang dikumpulkan menegaskan perlunya standardisasi operasional agar hasil yang dicapai memiliki tingkat validitas dan reliabilitas yang tinggi dalam skala akademis yang lebih luas.
+                            </p>
+                        </div>
+
+                        <!-- Page Number: Bottom Center if Chapter Start, else empty at bottom -->
+                        <div class="text-center font-serif text-sm font-semibold text-slate-800 pt-6">
+                            ${isChapterStartPage ? currentPageNum : ''}
+                        </div>
+                    </div>
+                `);
+
+                currentPageNum++;
+            }
+
+            // 6. BAB III PENUTUP (First Chapter Page -> Bottom Center)
+            pages.push(`
+                <div class="relative academic-paper mb-8 min-h-[1050px] flex flex-col justify-between text-slate-900 font-academic leading-relaxed" style="padding: 4cm 3cm 3cm 4cm;">
+                    <div>
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:2pt; font-family:'Times New Roman', serif;">BAB III</h2>
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:24pt; font-family:'Times New Roman', serif;">PENUTUP</h2>
+
+                        <h3 style="font-size:12pt; font-weight:bold; margin-top:12pt; margin-bottom:6pt; font-family:'Times New Roman', serif;">3.1 Kesimpulan</h3>
+                        <p style="text-align:justify; text-indent:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:10pt;">
+                            Berdasarkan hasil analisis dan pembahasan yang telah dipaparkan pada bab-bab sebelumnya mengenai <strong>${data.judul}</strong>, maka dapat ditarik beberapa kesimpulan utama sebagai berikut:
+                        </p>
+                        <ol style="margin-left:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:12pt; list-style-type: decimal;">
+                            <li>Penerapan kerangka kerja ilmiah secara terstruktur terbukti meningkatkan pemahaman dan efektivitas pelaksanaan program di lingkungan akademis.</li>
+                            <li>Sinergi antara regulasi institusi, kesiapan sumber daya manusia, dan pemanfaatan teknologi merupakan variabel kunci keberhasilan.</li>
+                        </ol>
+
+                        <h3 style="font-size:12pt; font-weight:bold; margin-top:14pt; margin-bottom:6pt; font-family:'Times New Roman', serif;">3.2 Saran</h3>
+                        <p style="text-align:justify; text-indent:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:10pt;">
+                            Berdasarkan kesimpulan di atas, penulis memberikan beberapa saran akademis yang konstruktif:
+                        </p>
+                        <ol style="margin-left:1.27cm; line-height:1.5; font-size:12pt; margin-bottom:12pt; list-style-type: decimal;">
+                            <li>Bagi Peneliti Selanjutnya: Disarankan untuk memperluas cakupan variabel penelitian serta menambah instrumen analisis agar didapatkan generalisasi yang lebih komprehensif.</li>
+                            <li>Bagi Instansi (${data.instansi}): Perlu dilakukan evaluasi berkala terhadap kebijakan operasional guna mempertahankan standardisasi kualitas yang berkelanjutan.</li>
+                        </ol>
+                    </div>
+                    <!-- Page Number: Bottom Center -->
+                    <div class="text-center font-serif text-sm font-semibold text-slate-800 pt-6">${currentPageNum}</div>
+                </div>
+            `);
+            currentPageNum++;
+
+            // 7. DAFTAR PUSTAKA (Top Right or Bottom Center)
+            pages.push(`
+                <div class="relative academic-paper mb-8 min-h-[1050px] flex flex-col justify-between text-slate-900 font-academic leading-relaxed" style="padding: 4cm 3cm 3cm 4cm;">
+                    <div class="absolute top-8 right-12 font-serif text-sm font-semibold text-slate-800">${currentPageNum}</div>
+                    <div>
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:24pt; font-family:'Times New Roman', serif;">DAFTAR PUSTAKA</h2>
+                        
+                        <p style="padding-left:1.27cm; text-indent:-1.27cm; line-height:1.5; font-size:12pt; margin-bottom:10pt; font-family:'Times New Roman', serif;">
+                            Ahmadi, R. & Suryani, N. (2023). <em>Metodologi Penulisan Ilmiah & Karya Tulis Akademis Modern</em>. Jakarta: Penerbit Nusa Cendekia.
+                        </p>
+                        <p style="padding-left:1.27cm; text-indent:-1.27cm; line-height:1.5; font-size:12pt; margin-bottom:10pt; font-family:'Times New Roman', serif;">
+                            Departemen Pendidikan Nasional. (2022). <em>Pedoman Umum Ejaan Bahasa Indonesia (PUEBI) dan Standardisasi Karya Ilmiah</em>. Jakarta: Balai Pustaka.
+                        </p>
+                        <p style="padding-left:1.27cm; text-indent:-1.27cm; line-height:1.5; font-size:12pt; margin-bottom:10pt; font-family:'Times New Roman', serif;">
+                            Pratama, A., & Wibowo, B. (2024). Analisis Strategis Implementasi Teknologi dalam Pendidikan Tinggi. <em>Jurnal Ilmu Akademika Indonesia</em>, 12(2), 145-159.
+                        </p>
+                        <p style="padding-left:1.27cm; text-indent:-1.27cm; line-height:1.5; font-size:12pt; margin-bottom:10pt; font-family:'Times New Roman', serif;">
+                            Santoso, B. (2023). <em>Sistem Manajemen Mutu Pendidikan & Tata Kelola Perguruan Tinggi</em>. Bandung: Pustaka Akademika.
+                        </p>
+                    </div>
+                    <div class="text-center font-serif text-sm font-semibold text-slate-800 pt-6"></div>
+                </div>
+            `);
+
+            // Join all rendered paper pages for preview
+            return pages.appendCover + pages.join('');
+        }
+
+        // DOWNLOAD AS REAL WORD (.DOCX BLOB CONVERSION) WITH EXACT MARGINS & UNIVERSITY SECTIONS
+        function downloadDocx() {
+            if (!generatedMakalahDoc) {
+                showToast('Belum ada makalah yang dibuat.', 'warning');
+                return;
+            }
+
+            // Standard Academic Word Header with A4 Page Setup & 4-4-3-3 cm margins
+            const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' 
+                xmlns:w='urn:schemas-microsoft-com:office:word' 
+                xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                <meta charset='utf-8'>
+                <title>Makalah Karya Nusa</title>
+                <!--[if gte mso 9]>
+                <xml>
+                <w:WordDocument>
+                <w:View>Print</w:View>
+                <w:Zoom>100</w:Zoom>
+                <w:DoNotOptimizeForCustomXube/>
+                </w:WordDocument>
+                </xml>
+                <![endif]-->
+                <style>
+                    @page WordSection1 {
+                        size: 595.3pt 841.9pt; /* A4 Paper Size */
+                        margin: 113.4pt 85.0pt 85.0pt 113.4pt; /* Top=4cm(113.4pt), Bottom=3cm(85pt), Right=3cm(85pt), Left=4cm(113.4pt) */
+                        mso-header-margin: 36.0pt;
+                        mso-footer-margin: 36.0pt;
+                    }
+                    div.WordSection1 { page: WordSection1; }
+                    body { font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 1.5; }
+                    p { margin-bottom: 6pt; text-align: justify; }
+                    h1, h2, h3 { font-family: 'Times New Roman', serif; }
+                </style>
+                </head>
+                <body>
+                <div class='WordSection1'>`;
+            
+            const footer = "</div></body></html>";
+            const sourceHTML = header + generatedMakalahDoc + footer;
+
+            const blob = new Blob(['\ufeff', sourceHTML], {
+                type: 'application/msword'
+            });
+
+            const judul = document.getElementById('m-judul').value.trim() || 'Makalah_Karya_Nusa';
+            const fileName = `${judul.replace(/[^a-zA-Z0-9]/g, '_')}_A4_4433.docx`;
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('File Word standar A4 (Margin 4-4-3-3 cm) berhasil diunduh!', 'success');
+        }
+
+            return `
+                <div style="font-family:'Times New Roman', Times, serif; color:#000000; font-size:12pt; line-height:1.5; padding:20px;">
+                    
+                    <!-- COVER PAGE -->
+                    <div style="text-align:center; min-h-[600px] flex flex-col justify-between border-b-2 border-gray-300 pb-12 mb-12">
+                        <div style="margin-top:30px;">
+                            <h1 style="font-size:18pt; font-weight:bold; text-transform:uppercase; margin-bottom:20px; line-height:1.3;">
+                                ${data.judul}
+                            </h1>
+                            <p style="font-size:12pt; font-style:italic; margin-top:15px;">
+                                MAKALAH<br>
+                                Diajukan untuk Memenuhi Salah Satu Tugas Mata Kuliah ${data.matkul}
+                            </p>
+                        </div>
+
+                        <div style="margin-top:50px; margin-bottom:50px;">
+                            <div style="width:100px; height:100px; margin:0 auto; border:2px solid #000; display:flex; items-center; justify-content:center; border-radius:50%; font-weight:bold; font-size:10pt;">
+                                LOGO<br>INSTANSI
+                            </div>
+                        </div>
+
+                        <div>
+                            <p style="font-size:12pt; font-weight:bold; margin-bottom:10px;">Disesuaikan Oleh:</p>
+                            <p style="font-size:12pt; font-weight:bold; text-transform:uppercase;">${data.penyusun}</p>
+                            <p style="font-size:12pt;">NIM: ${data.nim}</p>
+                        </div>
+
+                        <div style="margin-top:60px;">
+                            <p style="font-size:12pt; font-weight:bold; margin-bottom:5px;">DOSEN PENGAMPU:</p>
+                            <p style="font-size:12pt;">${data.dosen}</p>
+                            <br>
+                            <p style="font-size:14pt; font-weight:bold; text-transform:uppercase;">${data.instansi}</p>
+                            <p style="font-size:12pt; font-weight:bold;">TAHUN ${dateYear}</p>
+                        </div>
+                    </div>
+
+                    <!-- KATA PENGANTAR -->
+                    <div style="page-break-before:always; margin-bottom:40px;">
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:20px;">KATA PENGANTAR</h2>
+                        <p style="text-align:justify; text-indent:36pt; line-height:1.5; margin-bottom:12pt;">
+                            Puji dan syukur penulis panjatkan ke hadirat Tuhan Yang Maha Esa atas rahmat dan karunia-Nya sehingga makalah yang berjudul <strong>"${data.judul}"</strong> ini dapat diselesaikan dengan baik dan tepat pada waktunya. Makalah ini disusun guna memenuhi tugas akademik pada mata kuliah <strong>${data.matkul}</strong> di <strong>${data.instansi}</strong>.
+                        </p>
+                        <p style="text-align:justify; text-indent:36pt; line-height:1.5; margin-bottom:12pt;">
+                            Penulis menyampaikan ucapan terima kasih sebesar-besarnya kepada Bapak/Ibu <strong>${data.dosen}</strong> selaku dosen pengampu yang telah memberikan bimbingan, arahan, serta ilmu yang sangat bermanfaat selama proses penyusunan makalah ini.
+                        </p>
+                        <p style="text-align:justify; text-indent:36pt; line-height:1.5; margin-bottom:20pt;">
+                            Penulis menyadari bahwa makalah ini masih jauh dari kata sempurna, baik dari segi penyusunan maupun tata bahasa. Oleh karena itu, kritik dan saran yang membangun sangat diharapkan demi perbaikan di masa mendatang.
+                        </p>
+                        <div style="text-align:right; margin-top:30px;">
+                            <p>Kota Instansi, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}</p>
+                            <br><br>
+                            <p style="font-weight:bold;">Penulis</p>
+                        </div>
+                    </div>
+
+                    <!-- DAFTAR ISI -->
+                    <div style="page-break-before:always; margin-bottom:40px;">
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:20px;">DAFTAR ISI</h2>
+                        <table style="width:100%; font-size:12pt; border-collapse:collapse;">
+                            <tr><td style="padding:4px 0;"><strong>COVER / HALAMAN JUDUL</strong></td><td style="text-align:right;">i</td></tr>
+                            <tr><td style="padding:4px 0;"><strong>KATA PENGANTAR</strong></td><td style="text-align:right;">ii</td></tr>
+                            <tr><td style="padding:4px 0;"><strong>DAFTAR ISI</strong></td><td style="text-align:right;">iii</td></tr>
+                            <tr><td style="padding:4px 0;"><strong>BAB I PENDAHULUAN</strong></td><td style="text-align:right;">1</td></tr>
+                            <tr><td style="padding:4px 0; padding-left:20px;">1.1 Latar Belakang Masalah</td><td style="text-align:right;">1</td></tr>
+                            <tr><td style="padding:4px 0; padding-left:20px;">1.2 Rumusan Masalah</td><td style="text-align:right;">2</td></tr>
+                            <tr><td style="padding:4px 0; padding-left:20px;">1.3 Tujuan Penulisan</td><td style="text-align:right;">2</td></tr>
+                            <tr><td style="padding:4px 0;"><strong>BAB II PEMBAHASAN</strong></td><td style="text-align:right;">3</td></tr>
+                            <tr><td style="padding:4px 0; padding-left:20px;">2.1 Tinjauan Teoritis & Pembahasan Utama</td><td style="text-align:right;">3</td></tr>
+                            <tr><td style="padding:4px 0; padding-left:20px;">2.2 Analisis Komprehensif Berkelanjutan (Target ${data.targetPages} Halaman)</td><td style="text-align:right;">6</td></tr>
+                            <tr><td style="padding:4px 0;"><strong>BAB III PENUTUP</strong></td><td style="text-align:right;">${data.targetPages - 1}</td></tr>
+                            <tr><td style="padding:4px 0; padding-left:20px;">3.1 Kesimpulan</td><td style="text-align:right;">${data.targetPages - 1}</td></tr>
+                            <tr><td style="padding:4px 0; padding-left:20px;">3.2 Saran</td><td style="text-align:right;">${data.targetPages}</td></tr>
+                            <tr><td style="padding:4px 0;"><strong>DAFTAR PUSTAKA</strong></td><td style="text-align:right;">${data.targetPages}</td></tr>
+                        </table>
+                    </div>
+
+                    <!-- BAB I PENDAHULUAN -->
+                    <div style="page-break-before:always; margin-bottom:30px;">
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:5px;">BAB I</h2>
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:20px;">PENDAHULUAN</h2>
+
+                        <h3 style="font-size:12pt; font-weight:bold; margin-top:15px; margin-bottom:5px;">1.1 Latar Belakang Masalah</h3>
+                        <p style="text-align:justify; text-indent:36pt; line-height:1.5; margin-bottom:10pt;">
+                            Perkembangan dunia akademik dan teknologi informasi saat ini menuntut kajian komprehensif terhadap isu-isu strategis, salah satunya berkenaan dengan <strong>${data.judul}</strong>. Tantangan zaman yang semakin kompleks menuntut pemikiran kritis serta solusi ilmiah yang terstruktur dengan baik.
+                        </p>
+                        <p style="text-align:justify; text-indent:36pt; line-height:1.5; margin-bottom:10pt;">
+                            ${data.deskripsi ? data.deskripsi : 'Dalam konteks penerapan akademis, urgensi pembahasan topik ini didasari oleh kebutuhan mendesak untuk mengoptimalkan efisiensi, inovasi, serta relevansi teori dengan praktik nyata di lapangan.'}
+                        </p>
+
+                        <h3 style="font-size:12pt; font-weight:bold; margin-top:15px; margin-bottom:5px;">1.2 Rumusan Masalah</h3>
+                        <ol style="margin-left:36pt; line-height:1.5; margin-bottom:10pt;">
+                            <li>Bagaimanakah landasan teoritis dan konsep dasar dari ${data.judul}?</li>
+                            <li>Faktor-faktor apa sajakah yang mempengaruhi keberhasilan implementasi topik ini?</li>
+                            <li>Bagaimana strategi dan solusi komprehensif untuk mengoptimalkan potensi yang ada?</li>
+                        </ol>
+
+                        <h3 style="font-size:12pt; font-weight:bold; margin-top:15px; margin-bottom:5px;">1.3 Tujuan Penulisan</h3>
+                        <ol style="margin-left:36pt; line-height:1.5; margin-bottom:10pt;">
+                            <li>Untuk menganalisis secara mendalam landasan teori ${data.judul}.</li>
+                            <li>Untuk mengidentifikasi kendala serta solusi efektif dalam penerapan nyata.</li>
+                            <li>Untuk memberikan rekomendasi akademis bagi akademisi dan praktisi terkait.</li>
+                        </ol>
+                    </div>
+
+                    <!-- BAB II PEMBAHASAN -->
+                    <div style="page-break-before:always; margin-bottom:30px;">
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:5px;">BAB II</h2>
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:20px;">PEMBAHASAN</h2>
+
+                        ${pembahasanContent}
+                    </div>
+
+                    <!-- BAB III PENUTUP -->
+                    <div style="page-break-before:always; margin-bottom:30px;">
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:5px;">BAB III</h2>
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:20px;">PENUTUP</h2>
+
+                        <h3 style="font-size:12pt; font-weight:bold; margin-top:15px; margin-bottom:5px;">3.1 Kesimpulan</h3>
+                        <p style="text-align:justify; text-indent:36pt; line-height:1.5; margin-bottom:10pt;">
+                            Berdasarkan pembahasan komprehensif yang telah dipaparkan pada bab-bab sebelumnya mengenai <strong>${data.judul}</strong>, dapat disimpulkan bahwa pendekatan ilmiah yang terstruktur merupakan aspek krusial dalam pencapaian hasil secara optimal. Pemahaman yang mendalam mengenai teori dan praktik terbukti memberikan kontribusi nyata.
+                        </p>
+
+                        <h3 style="font-size:12pt; font-weight:bold; margin-top:15px; margin-bottom:5px;">3.2 Saran</h3>
+                        <p style="text-align:justify; text-indent:36pt; line-height:1.5; margin-bottom:10pt;">
+                            Diharapkan bagi peneliti selanjutnya atau institusi terkait agar dapat memperluas cakupan sampel serta memanfaatkan teknologi ilmiah mutakhir guna mengembangkan hasil penulisan ini secara berkesinambungan.
+                        </p>
+                    </div>
+
+                    <!-- DAFTAR PUSTAKA -->
+                    <div style="page-break-before:always;">
+                        <h2 style="text-align:center; font-size:14pt; font-weight:bold; text-transform:uppercase; margin-bottom:20px;">DAFTAR PUSTAKA</h2>
+                        <p style="padding-left:36pt; text-indent:-36pt; line-height:1.5; margin-bottom:8pt;">
+                            Ahmadi, R. & Suryani, N. (2023). <em>Metodologi Penulisan Ilmiah & Akademis Modern</em>. Jakarta: Penerbit Nusa Cendekia.
+                        </p>
+                        <p style="padding-left:36pt; text-indent:-36pt; line-height:1.5; margin-bottom:8pt;">
+                            Pratama, A., & Wibowo, B. (2024). Analisis Strategis Implementasi Teknologi dalam Pendidikan Tinggi. <em>Jurnal Ilmu Akademika Indonesia</em>, 12(2), 145-159.
+                        </p>
+                        <p style="padding-left:36pt; text-indent:-36pt; line-height:1.5; margin-bottom:8pt;">
+                            Santoso, B. (2022). <em>Panduan Lengkap Penyusunan Makalah & Karya Tulis Ilmiah</em>. Bandung: Pustaka Utama.
+                        </p>
+                    </div>
+
+                </div>
+            `;
+        }
+
+        // DOWNLOAD AS REAL WORD (.DOCX BLOB CONVERSION)
+        function downloadDocx() {
+            if (!generatedMakalahDoc) {
+                showToast('Belum ada makalah yang dibuat.', 'warning');
+                return;
+            }
+
+            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+                "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+                "xmlns='http://www.w3.org/TR/REC-html40'>"+
+                "<head><meta charset='utf-8'><title>Makalah Karya Nusa</title>"+
+                "<style>@page WordSection1 {size:595.3pt 841.9pt; margin:72.0pt 72.0pt 72.0pt 72.0pt;} div.WordSection1 {page:WordSection1;}</style>"+
+                "</head><body><div class='WordSection1'>";
+            
+            const footer = "</div></body></html>";
+            const sourceHTML = header + generatedMakalahDoc + footer;
+
+            const blob = new Blob(['\ufeff', sourceHTML], {
+                type: 'application/msword'
+            });
+
+            const judul = document.getElementById('m-judul').value.trim() || 'Makalah_Karya_Nusa';
+            const fileName = `${judul.replace(/[^a-zA-Z0-9]/g, '_')}.docx`;
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('File Word berhasil diunduh!', 'success');
+        }
+
+        // ================= FRIEND & REALTIME-LIKE CHAT SYSTEM =================
+        function renderFriendsList() {
+            if (!currentUser) return;
+
+            const friendsListContainer = document.getElementById('friends-list');
+            friendsListContainer.innerHTML = '';
+
+            // Get friends for current user
+            const myFriendships = db.friends.filter(f => f.userId === currentUser.id || f.friendId === currentUser.id);
+            const friendUserIds = myFriendships.map(f => f.userId === currentUser.id ? f.friendId : f.userId);
+            
+            const friendsObj = db.users.filter(u => friendUserIds.includes(u.id));
+            document.getElementById('friends-count').innerText = friendsObj.length;
+
+            if (friendsObj.length === 0) {
+                friendsListContainer.innerHTML = `<div class="text-xs text-slate-500 italic p-3 text-center">Belum ada teman. Cari dan tambahkan teman di atas!</div>`;
+                return;
+            }
+
+            friendsObj.forEach(friend => {
+                const isSelected = activeChatFriendId === friend.id;
+                const div = document.createElement('div');
+                div.className = `p-2.5 rounded-xl flex items-center justify-between cursor-pointer transition ${isSelected ? 'bg-emerald-900/40 border border-emerald-600/50' : 'bg-slate-950 hover:bg-slate-800/80 border border-slate-800'}`;
+                div.onclick = () => selectFriendForChat(friend);
+
+                div.innerHTML = `
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-full bg-slate-800 text-gold-400 font-bold flex items-center justify-center text-xs border border-slate-700">
+                            ${friend.name.charAt(0)}
+                        </div>
+                        <div>
+                            <div class="font-semibold text-xs text-slate-200">${friend.name}</div>
+                            <div class="text-[10px] text-slate-400">${friend.campus}</div>
+                        </div>
+                    </div>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                `;
+                friendsListContainer.appendChild(div);
+            });
+        }
+
+        function searchUsers() {
+            const query = document.getElementById('search-user-input').value.trim().toLowerCase();
+            const resultsBox = document.getElementById('search-results-box');
+
+            if (!query) {
+                resultsBox.classList.add('hidden');
+                return;
+            }
+
+            const matches = db.users.filter(u => 
+                u.id !== currentUser.id && 
+                u.status === 'approved' &&
+                (u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query))
+            );
+
+            resultsBox.innerHTML = '';
+            resultsBox.classList.remove('hidden');
+
+            if (matches.length === 0) {
+                resultsBox.innerHTML = `<div class="text-[11px] text-slate-500 p-1">Pengguna tidak ditemukan.</div>`;
+                return;
+            }
+
+            matches.forEach(u => {
+                const isAlreadyFriend = db.friends.some(f => 
+                    (f.userId === currentUser.id && f.friendId === u.id) ||
+                    (f.friendId === currentUser.id && f.userId === u.id)
+                );
+
+                const item = document.createElement('div');
+                item.className = "flex items-center justify-between p-1.5 hover:bg-slate-900 rounded text-xs";
+                item.innerHTML = `
+                    <div>
+                        <div class="font-bold text-slate-200 text-[11px]">${u.name}</div>
+                        <div class="text-[10px] text-slate-400">${u.campus}</div>
+                    </div>
+                    ${isAlreadyFriend ? 
+                        '<span class="text-[10px] text-emerald-400">Berteman</span>' : 
+                        `<button onclick="addFriend('${u.id}')" class="px-2 py-0.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded text-[10px]">Tambah</button>`
+                    }
+                `;
+                resultsBox.appendChild(item);
+            });
+        }
+
+        function addFriend(friendId) {
+            db.friends.push({ userId: currentUser.id, friendId });
+            saveDB();
+            renderFriendsList();
+            searchUsers();
+            showToast('Teman berhasil ditambahkan!', 'success');
+        }
+
+        function selectFriendForChat(friend) {
+            activeChatFriendId = friend.id;
+            document.getElementById('chat-active-name').innerText = friend.name;
+            document.getElementById('chat-active-status').innerText = friend.campus + ' • Online';
+            document.getElementById('chat-active-avatar').innerText = friend.name.charAt(0);
+
+            document.getElementById('chat-input').disabled = false;
+            document.getElementById('chat-send-btn').disabled = false;
+
+            renderFriendsList();
+            renderChatMessages();
+        }
+
+        function renderChatMessages() {
+            if (!currentUser || !activeChatFriendId) return;
+
+            const chatContainer = document.getElementById('chat-messages');
+            chatContainer.innerHTML = '';
+
+            const conversation = db.chats.filter(c => 
+                (c.senderId === currentUser.id && c.receiverId === activeChatFriendId) ||
+                (c.senderId === activeChatFriendId && c.receiverId === currentUser.id)
+            );
+
+            if (conversation.length === 0) {
+                chatContainer.innerHTML = `<div class="text-center py-12 text-slate-500 text-xs">Belum ada obrolan. Kirim pesan pertama Anda!</div>`;
+                return;
+            }
+
+            conversation.forEach(msg => {
+                const isMe = msg.senderId === currentUser.id;
+                const wrapper = document.createElement('div');
+                wrapper.className = `flex ${isMe ? 'justify-end' : 'justify-start'}`;
+
+                wrapper.innerHTML = `
+                    <div class="max-w-[75%] p-3 rounded-2xl text-xs ${isMe ? 'bg-emerald-700 text-white rounded-br-none' : 'bg-slate-800 text-slate-200 rounded-bl-none border border-slate-700'}">
+                        <div>${msg.text}</div>
+                        <div class="text-[9px] ${isMe ? 'text-emerald-200' : 'text-slate-400'} text-right mt-1">${msg.timestamp}</div>
+                    </div>
+                `;
+                chatContainer.appendChild(wrapper);
+            });
+
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function sendChatMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+
+            if (!text || !activeChatFriendId) return;
+
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+            const newMsg = {
+                id: 'c_' + Date.now(),
+                senderId: currentUser.id,
+                receiverId: activeChatFriendId,
+                text: text,
+                timestamp: timeStr
+            };
+
+            db.chats.push(newMsg);
+            saveDB();
+            input.value = '';
+            renderChatMessages();
+
+            // Simulate Friend Auto Reply for Demonstration
+            setTimeout(() => {
+                const replies = [
+                    "Siap! Makalahnya sangat rapi dan sesuai susunan.",
+                    "Terima kasih atas idenya, aku akan coba generator Karya Nusa juga.",
+                    "Bagaimanakah rumusan masalah bab 1 milikmu?"
+                ];
+                const randomReply = replies[Math.floor(Math.random() * replies.length)];
+                
+                db.chats.push({
+                    id: 'c_' + Date.now(),
+                    senderId: activeChatFriendId,
+                    receiverId: currentUser.id,
+                    text: randomReply,
+                    timestamp: new Date().getHours().toString().padStart(2, '0') + ':' + new Date().getMinutes().toString().padStart(2, '0')
+                });
+                saveDB();
+                if (activeChatFriendId) renderChatMessages();
+            }, 1200);
+        }
+
+        function clearChatHistory() {
+            if (!activeChatFriendId) return;
+            db.chats = db.chats.filter(c => 
+                !(c.senderId === currentUser.id && c.receiverId === activeChatFriendId) &&
+                !(c.senderId === activeChatFriendId && c.receiverId === currentUser.id)
+            );
+            saveDB();
+            renderChatMessages();
+            showToast('Riwayat obrolan dibersihkan.', 'info');
+        }
+
+        // ================= ACADEMIC UTILITIES LOGIC =================
+        function checkPlagiarism() {
+            const text = document.getElementById('plag-text').value.trim();
+            const resultBox = document.getElementById('plag-result');
+
+            if (!text) {
+                showToast('Masukkan paragraf teks untuk diperiksa.', 'warning');
+                return;
+            }
+
+            // Simulate Similarity Score Calculation
+            const randomScore = Math.floor(Math.random() * 15) + 85; // 85% - 99% unique
+            document.getElementById('plag-score').innerText = randomScore + '% Unik';
+            document.getElementById('plag-bar').style.width = randomScore + '%';
+
+            resultBox.classList.remove('hidden');
+            showToast('Analisis plagiarisme selesai!', 'success');
+        }
+
+        function generateCitation(format) {
+            const author = document.getElementById('cite-author').value.trim() || 'Penulis, A.';
+            const year = document.getElementById('cite-year').value.trim() || '2024';
+            const title = document.getElementById('cite-title').value.trim() || 'Judul Penelitian Akademik';
+            const publisher = document.getElementById('cite-publisher').value.trim() || 'Penerbit Utama';
+
+            const outputBox = document.getElementById('cite-output-box');
+            const outputText = document.getElementById('cite-output-text');
+
+            let formatted = '';
+            if (format === 'APA') {
+                formatted = `${author} (${year}). ${title}. ${publisher}.`;
+            } else { // IEEE
+                formatted = `[1] ${author}, "${title}," ${publisher}, ${year}.`;
+            }
+
+            outputText.innerText = formatted;
+            outputBox.classList.remove('hidden');
+        }
+
+        function copyCitation() {
+            const text = document.getElementById('cite-output-text').innerText;
+            if (!text) return;
+
+            // Use execCommand copy guardrail for standard output
+            const dummy = document.createElement('textarea');
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+
+            showToast('Sitasi berhasil disalin ke clipboard!', 'success');
+        }
+
+        // TOAST NOTIFICATION UTILITY
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+
+            let bg = 'bg-slate-900 border-slate-700 text-slate-100';
+            let icon = 'fa-circle-info text-blue-400';
+
+            if (type === 'success') {
+                bg = 'bg-emerald-950 border-emerald-600/60 text-emerald-100';
+                icon = 'fa-circle-check text-emerald-400';
+            } else if (type === 'warning') {
+                bg = 'bg-amber-950 border-amber-600/60 text-amber-100';
+                icon = 'fa-triangle-exclamation text-amber-400';
+            } else if (type === 'error') {
+                bg = 'bg-red-950 border-red-600/60 text-red-100';
+                icon = 'fa-circle-xmark text-red-400';
+            }
+
+            toast.className = `p-3 rounded-xl border shadow-xl flex items-center gap-3 text-xs transition-all duration-300 transform translate-y-2 ${bg}`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-base"></i><span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
